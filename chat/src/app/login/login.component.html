@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="d-flex bg-dark justify-content-center">
+        <div class="form-group">
+        <form>
+            <label>Email: </label>
+            <input type="text" class="form-control" placeholder="Enter Email:" [(ngModel)]="email" name="email">
+            <label>Password: </label>
+            <input type="text" class="form-control" placeholder="Enter Password:"[(ngModel)]="pwd" name="pwd">
+            <br>
+            <button (click)="login(email, pwd)" class="btn btn-primary">Login</button>
+        </form>
+        </div>
+    </div>
+</div>

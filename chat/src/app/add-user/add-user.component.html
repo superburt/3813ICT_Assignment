@@ -1,0 +1,20 @@
+<div *ngIf="isSuper; else elseBlock">
+    <div class="container">
+        <div class="bg-dark  flex-wrap align-content-center ">
+            <div class="form-group">
+                <h2>Create A New User</h2>
+                <form>
+                    <label>Email: </label>
+                    <input type="text"  class="form-control" placeholder="Enter new Email:" [(ngModel)]="email" name="email">
+                    <label>Password: </label>
+                    <input type="text"   class="form-control" placeholder="Enter new Password:" [(ngModel)]="pwd" name="pwd">
+                    <label>Username: </label>
+                    <input type="text"  class="form-control" placeholder="Enter new Username:" [(ngModel)]="username" name="username">
+                </form>
+                <br>
+                <button (click)="AddUser()" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #elseBlock>You're not a super admin -> log out and sign is as a super admin to add a new user</ng-template>

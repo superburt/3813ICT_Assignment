@@ -1,0 +1,38 @@
+<div class="container">
+    <div *ngIf="isSuper">
+        <!-- IF a user is signed in as a super admin -> then show this -->
+        <div class="bg-dark d-flex justify-content-center">
+            <div class="form-group"> 
+                <form>
+                    <h4>Elevate to Super</h4>
+                    <input type="text" class="form-control" id="userElevate" [(ngModel)]="userIdToElevate" placeholder="Enter User ID:" name="userIdToElevate">
+                <div  class="form-group">
+                    <button (click)="userElevated(userIdToElevate)" class="btn btn-primary">Elevate</button>
+                </div>
+                </form>
+                <h4>Delete a User</h4>
+                <form>
+                    <input type="text" class="form-control" id="userDeletion"  placeholder="Enter User ID:"[(ngModel)]="deletedUserId" name="deletedUserId">
+                </form>
+                <button (click)="deleteUser(deletedUserId)" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+    <table class="table table-light table-bordered table-responsive-md">
+        <tr>
+            <th>Users</th>  
+        </tr>
+        <tr>
+            <td>Username</td>
+            <td *ngFor="let username of usernames" >{{username}}</td>
+        </tr>
+        <tr>
+            <td>Role</td>
+            <td *ngFor="let role of userRole" >{{role}}</td>
+        </tr>
+        <tr>
+            <td>UserID</td>
+            <td *ngFor="let userId of userIds" >{{userId}}</td>
+        </tr>
+    </table>
+</div>

@@ -11,7 +11,7 @@ const PORT = 3000;
 
 app.use(bodyParser.json());
 app.use(cors());
-
+//sockets set up and defined
 sockets.connect(io, PORT)
 
 server.listen(http, PORT);

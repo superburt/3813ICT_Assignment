@@ -1,3 +1,7 @@
+// const file = require('../src/assets/data.json')
+const fs = require('fs');
+//file system constant declare
+
 module.exports = {
     listen: function(app, PORT){
         app.listen(PORT, ()=>{

@@ -1,16 +1,17 @@
-<p>chat works!</p>
-<div class="container">
-    <form>
-        <div class="form-group">
+<div *ngIf="isValid">
+    <div class="container">
+      <form>
+          <div class="form-group bg-primary">
             <label for="messagecontent">New Message</label>
-            <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <button (click)="chat(messagecontent)" class="btn btn-primary">Chat</button>
-        </div>
+            <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control">
+          </div>
+          <div  class="form-group">
+            <button (click)="chat(messagecontent)" class="btn btn-info">Send</button>
+          </div>
     </form>
-    <h3>Chat Messages</h3>
-    <ul>
-        <li *ngFor="let message of messages">{{message}}</li>
+    </div>
+    <h2>Chat messages</h2>
+    <ul id="leftCol">
+      <li *ngFor="let message of messages" >{{sender}}: {{message}}</li>
     </ul>
 </div>

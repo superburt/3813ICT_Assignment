@@ -1,0 +1,11 @@
+
+{ 
+    "User":
+        [{"email" : "email1","pwd" : "pwd1", "age": "20", "birthdate":"BIRTHDAY 1", "valid": "true"}, 
+        {"email" : "email2","pwd" : "pwd2", "age": "20", "birthdate":"BIRTHDAY 2", "valid": "true"},
+        {"email" : "email3","pwd" : "pwd3", "age": "20", "birthdate":"BIRTHDAY 3", "valid": "true"}], 
+    
+    "Chat":
+        ["This is a Chat","HERES A MESSAGE","Another","One More","Again"]
+
+}
