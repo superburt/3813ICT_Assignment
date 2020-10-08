@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="bg-light  flex-wrap align-content-right ">
+        <div class="form-group">
+            <h2>Update This User's Account Information</h2>
+            <form>
+                <label>Username: </label>
+                <input type="text"  class="form-control" placeholder="Enter name:" [(ngModel)]="username" name="username">
+                <label>Email: </label>
+                <input type="text"   class="form-control" placeholder="Enter email:" [(ngModel)]="email" name="email">
+                <label>Password: </label>
+                <input type="text"  class="form-control" placeholder="Enter password:" [(ngModel)]="pwd" name="pwd">
+                <label>Role: </label>
+                <input type="text"  class="form-control" placeholder="Enter role:" [(ngModel)]="role" name="role">
+            </form>
+            <br>
+            <button (click)="UpdateUser(username, email, role, pwd)" class="btn btn-primary">Update</button>
+        </div>
+    </div>
+</div>

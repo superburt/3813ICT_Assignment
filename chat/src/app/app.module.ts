@@ -1,48 +1,38 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router'
+import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AddUserComponent } from './add-user/add-user.component';
-import { AccountsComponent } from './accounts/accounts.component'
-import { AppComponent } from './app.component';
+
+
 import { ChatComponent } from './chat/chat.component';
 import { LoginComponent } from './login/login.component';
-import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { MessageService } from "./services/message.service";
+import { ChatService } from "./services/chat.service";
+import { NewUserComponent } from './add-user/add-user.component';
+import { AccountComponent } from './account/account.component';
+import { AppComponent } from './app.component';
+import { UserService } from "./services/user.service";
+import { ImageUploadService } from "./services/image.service";
+import { AccountsComponent } from './accounts/accounts.component';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
 
 
 @NgModule({
   declarations: [
-    LoginComponent,
     AppComponent,
+    AccountComponent,
+    AccountsComponent,
+    AccountSettingsComponent,
     ChatComponent,
-    AddUserComponent,
-    AccountsComponent
+    LoginComponent,
+    NewUserComponent
   ],
   imports: [
-    BrowserModule, RouterModule,AppRoutingModule, FormsModule, HttpClientModule, CommonModule
-
+    BrowserModule, RouterModule, CommonModule, AppRoutingModule, FormsModule, HttpClientModule
   ],
-  providers: [MessageService],
+  providers: [ChatService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
-
-class Person { 
-  public name: string; 
-  constructor(name: string) {this.name = name; }
-}
-class Employee extends Person { 
-private department: string;
-constructor(name: string, department: string) {
-  super(name);    
-  this.department = department; 
-}
-public getElevatorPitch() {
-   return `Hello, my name is ${this.name} and I work in ${this.department}.`;  }
-}
-let howard = new Employee("Howard", "Sales");
-console.log(howard.getElevatorPitch());
-console.log(howard.name);

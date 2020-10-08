@@ -1,124 +1,140 @@
-
-const fs = require('fs');
-// const file = require('../Data.json')
-
 module.exports = {
-    connect: function(io, PORT){
-        io.on('connection', (socket)=> {
-            fs.readFile('../chat/Data.json', (error, data) => {
-                if (error) throw error;
-                fileData = JSON.parse(data)    
-                io.emit('getUsers', fileData.User);    
-                io.emit('chat', fileData.Chat);
-            })
+    connect: function(io, db){
+        console.log('A socket is connected')
+//defining collection variables to correspond to the mongo data for each
+        const groupCollection = db.collection('group');
+        const channelCollection = db.collection('channel');     
+        const userCollection = db.collection('users');
+        
+        io.on('connection', (socket)=> { 
+            socket.on('chat', (chat)=>{   
+                channelCollection.findOne({channelName: chat.channelName}, (err, data)=>{
+                    console.log("Socket triggered")
+                    if (data){
+                        if (data.chatHist[0].chatChat == "No chat history"){
+                            console.log("No chats found")
+                            chatHistory = data.chatHist
+                            chatHistory[0] = {chatChat : chat.chatChat}
+                        } else {
+                            chatHistory = data.chatHist     
+                            chatHistory[chatHistory.length] = {chatChat : chat.chatChat}
+                        }
+                    } else {
+                        console.log("No chat history was found")
+                    }
 
-        console.log("User connection on port" + PORT + ":" + socket.id);
-            socket.on('message', (message)=>{
-                io.emit('message', message);
-            }),
-            socket.on('chat', (chat)=>{       
-                
-                fs.readFile('../chat/Data.json', (error, data) => {
-                    if (error) throw error;
-                    var fileData = JSON.parse(data)
-                    fileData.Chat.push(chat.messagecontent)
-                    dataAsString = JSON.stringify(fileData)
-                    fs.writeFile('../Data.json', dataAsString, (error) =>{
-                        if (error) throw error;
+                    channelCollection.updateOne({ channelName : chat.channelName },{$set:{chatHist : chatHistory}}, {upsertL: true},  (err, data) =>{
+                        if (err){
+                            console.log(err)
+                        } else {
+                            io.emit('chat', chatHistory);
+                        }
                     })
-                    io.emit('chat', fileData.Chat);
                 })
             }),
-            socket.on('auth', (auth) =>{
 
-                console.log(auth);
-                fs.readFile('../chat/Data.json', (error, data) => {
-                    if (error) throw error;
-                    var fileData = JSON.parse(data)
-                    dataAsString = JSON.stringify(fileData)
-
-                var customer = {};
-                customer.email = "";
-                customer.pwd = "";
-                customer.role = "";
-                customer.username = "";
-                customer.userId = "";
-                customer.valid = "false";
-
-                for (let i=0;i<fileData.User.length; i++){
-                    if (auth.email == fileData.User[i].email && auth.pwd == fileData.User[i].pwd){  
-                        customer.username = fileData.User[i].username;
-                        customer.role = fileData.User[i].role;
-                        customer.email = fileData.User[i].email;
-                        customer.pwd = fileData.User[i].pwd;
-                        customer.userId = fileData.User[i].userId;
-                        customer.valid = "true";
+            socket.on('chatHist', (chatHist)=>{   
+                channelCollection.find({channelName: chatHist}).toArray((err, data) =>{
+                    console.log('chatHist has been triggered')
+                    if (data[0].chatHist){
+                        io.emit('chatHist', data[0].chatHist ); 
+                    } else {
+                        console.log("chatHistory encountered an error at" + data[0])
                     }
-                } 
-                io.emit('auth', customer);
-            })
-        }),
-        socket.on('getUsers', (getUsers)=>{
-            fs.readFile('../chat/Data.json', (error, data) => {
-                if (error) throw error;
-                var fileData = JSON.parse(data)   
-                console.log(fileData.User[0])            
-            })
-            io.emit('getUsers', fileData.User);
-        }),
-        socket.on('user', (user) =>{
-            console.log(user.CurrentUserRole)
-            fs.readFile('../chat/Data.json', (error, data) => {
-                if (error) throw error;
-                if (user.CurrentUserRole == "Super"){
-                    user.role = "Group Admin";
-                } else if (user.CurrentUserRole == "Group Admin"){
-                    user.role = "Group Assis";
-                }
-                var fileData = JSON.parse(data)
-                fileData.User.push(user)
-                dataAsString = JSON.stringify(fileData)
-                fs.writeFile('../chat/Data.json', dataAsString, (error) =>{
-                    if (error) throw error;
-                })
-            })
-        }),
-        socket.on('deletedUserId' , (deletedUserId) =>{
-            fs.readFile('../chat/Data.json', (error, data) => {
-                if (error) throw error;
-                var fileData = JSON.parse(data)   
-                for (let i = 0; i< fileData.User.length; i++){
-                    if (fileData.User[i].userId == deletedUserId){
-                        fileData.User.splice(i, 1);
-                    }
-                }
-                dataAsString = JSON.stringify(fileData)  
-                console.log(dataAsString)             
-                fs.writeFile('../chat/Data.json', dataAsString, (error) =>{
-                    if (error) throw error;
-                    console.log(dataAsString)
-                })
-                io.emit('getUsers', fileData.User);
-            })
-        }),
-        socket.on('userElavated', (userElevated) =>{
-            fs.readFile('../chat/Data.json', (error, data) => {
-                if (error) throw error;
-                var fileData = JSON.parse(data)  
-                for (let i = 0; i< fileData.User.length; i++){
-                    if (fileData.User[i].userId == userElevated){
-                        fileData.User[i].role = "Super"
-                        console.log(fileData.User[i])
-                    }
-                }   
-                dataAsString = JSON.stringify(fileData)  
-                fs.writeFile('../chat/Data.json', dataAsString, (error) =>{
-                    if (error) throw error;
-                    console.log(dataAsString)
                 })  
-                io.emit('getUsers', fileData.User);      
+            }),
+            
+
+            socket.on('createNewChannel', (createNewChannel)=>{  
+                console.log("New channel has been triggered")              
+                channelCollection.insertOne({channelName : createNewChannel.channelName, chatHist : [{chatChat : "No chat history"}]}, (err, data)=>{
+                    console.log("Channel Created")
+                })
+                groupCollection.findOne({ groupName : createNewChannel.groupName },  (err, data) =>{
+                    if (err){
+                        console.log(err)
+                    } else {
+                        createNewChannelSet = data.channelSet
+                        createNewChannelSet[data.channelSet.length] = {channelName : createNewChannel.channelName}
+                        console.log(createNewChannelSet)
+                    }
+                
+                    groupCollection.updateOne({ groupName : createNewChannel.groupName },{$set:{channelSet : createNewChannelSet}}, {upsertL: true},  (err, data) =>{
+                        if (err){
+                            console.log(err)
+                        } else {
+                                console.log(data)
+                        }
+                    })
+                })
+            }),
+            socket.on('channel', (channel)=>{  
+                SetChan = [] 
+                 groupCollection.findOne({groupName: channel}, (err, data) =>{
+                     console.log('channel has been triggered')
+                     for (i =0; i < data.channelSet.length; i++){
+                             SetChan[i] = data.channelSet[i].channelName
+                     }
+                     io.emit('channel', SetChan);
+                 })  
+             }),
+            
+            socket.on('group', (group)=>{  
+                console.log('group has been triggered')
+                groupSet = []
+                userCollection.findOne({username : group}, (err, data)=>{
+                    if (data.role == "Super"){
+                        groupCollection.find().toArray((err, data) =>{
+                            for (i = 0; i< data.length; i++){
+                                console.log(data[i].groupName)
+                                groupSet[i] = data[i].groupName
+                            }
+                            io.emit('group', groupSet);
+                        })   
+                    } else {
+                        groupSet = []
+                        groupCollection.find().toArray((err, data) =>{
+                            for (i = 0; i< data.length; i++){
+                                for (j = 0; j < data[i].groupMembers.length ;j++){
+                                    if (data[i].groupMembers[j].username == group){
+                                        groupSet[i - 1] = data[i].groupName 
+                                    }
+                                }
+                            }
+                            io.emit('group', groupSet);
+                        }) 
+                    }
+                })
+            }),
+
+            socket.on('user', ()=>{  
+                console.log('user has been triggered')
+                userCollection.find().toArray((err, data) =>{
+                    for (i = 0; i< data.length; i++){
+                        io.emit('user', data[i].username );
+                    }
+                })  
+            }),
+
+            socket.on('userAssign', (userAssign)=>{  
+                console.log('userAssign has been triggered')
+                groupCollection.findOne({ groupName : userAssign.groupName },  (err, data) =>{
+                    if (err){
+                        console.log(err)
+                    } else {
+                        newMemberSet = data.groupMembers
+                        newMemberSet[data.groupMembers.length] = {username : userAssign.username}
+                        console.log(newMemberSet)
+                    }
+                    groupCollection.updateOne({ groupName : userAssign.groupName },{$set:{groupMembers : newMemberSet}}, {upsertL: true},  (err, data) =>{
+                        if (err){
+                            console.log(err )
+                        } else {
+                            console.log('Members updated')
+                        }
+                    })
+                })
             })
         })
-        });
     }
 }

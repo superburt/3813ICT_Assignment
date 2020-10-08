@@ -1,6 +1,7 @@
-import { RegisterService } from "../services/register.service";
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { UserService } from "../services/user.service";
 
 @Component({
   selector: 'app-accounts',
@@ -8,67 +9,26 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./accounts.component.css']
 })
 export class AccountsComponent implements OnInit {
+  IdDelete = "";
+  userSet = [];
+  constructor(private router: Router, public userService: UserService, private http:HttpClient) { }
 
-  constructor(public registerService: RegisterService, private router :Router) { }
-  ListOfusers = [];
-  ioConnection: any;
-  isSuper : boolean = false;
-  userIdToElevate = "";
-  userIds = [];
-  usernames = [];
-  userRole = [];
-  deletedUserId = "";
-  
   ngOnInit(): void {
-    this.initToConnection();
-    this.getUsers();
-    if (localStorage.getItem('role') == "Super"){
-      this.isSuper = true;   
-  } else {
-      this.isSuper = false;
+    localStorage.setItem('currentID', "");
+    this.userService.getUsers().subscribe((data) =>{
+      this.userSet = data;
+    })
   }
-}
-  private initToConnection(){
-    this.registerService.initSocket();
-    }
-  public getUsers(){
-    this.ioConnection = this.registerService.onInit().subscribe((getUsers: any)=> {
-      localStorage.setItem('userCount', getUsers.length)
-      for (let i = 0; i< getUsers.length; i++){
-        this.usernames.push(getUsers[i].username);
-        this.userRole.push(getUsers[i].role);
-        this.userIds.push(getUsers[i].userId);
-      }
-    });
+
+  IdUpdate(IdUpdate){
+    localStorage.setItem('currentID' , IdUpdate);
+    this.router.navigateByUrl('account');
   }
-  public ElevateUser(userIdToElevate){
-    this.registerService.sendElevateUser(this.userIdToElevate)
-    this.userIdToElevate = null
-    this.ioConnection = this.registerService.onInit().subscribe((getUsers: any)=> {
-      this.usernames = [];
-      this.userRole = [];
-      this.userIds = [];
-      for (let i = 0; i< getUsers.length; i++){
-        this.usernames.push(getUsers[i].username)
-        this.userRole.push(getUsers[i].role)
-        this.userIds.push(getUsers[i].userId)
-        
-        
-      }
-    }); 
+//This function deletes a user ID
+  DeleteUser(IdDelete){
+    this.userService.removeUser(IdDelete).subscribe((data) =>{
+      this.userSet = data;
+    })
   }
-  public deleteUser(deletedUserId){
-    this.registerService.sendDeletedUser(this.deletedUserId);
-    this.deletedUserId = null;
-    this.ioConnection = this.registerService.onInit().subscribe((getUsers: any)=> {
-      this.userIds = [];
-      this.usernames = [];
-      this.userRole = [];
-      for (let i = 0; i< getUsers.length; i++){
-        this.userRole.push(getUsers[i].role)
-        this.usernames.push(getUsers[i].username)
-        this.userIds.push(getUsers[i].userId)
-      }
-    }); 
-  }
+  
 }

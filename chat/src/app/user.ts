@@ -1,16 +1,17 @@
-  export class User  {
-    email: string;
-    age: string;
-    username: string;
-    pwd: string;
-    birthdate: string;
-    valid: string;
-    constructor(email: string = "", pwd : string = "",birthdate: string = "",age: string = "", username:string = "", valid: string =""){
-        this.pwd = pwd;
-        this.email = email;
-        this.username = username;
-        this.birthdate = birthdate;
-        this.age = age;
-        this.valid = valid;
-    }
+export class User  {
+  email: string;
+  id: string;
+  pwd: string;
+  role: string;
+  username: string;
+  valid: string;
+  constructor(email: string = "", pwd : string = "",role: string = "",id: string = "", username:string = "", valid: string =""){
+      this.email = email;
+      this.pwd = pwd;
+      this.username = username;
+      this.role = role;
+      this.id = id;
+      this.valid = valid;
+  }
 }
+//this file defines the type that User data should adhere to

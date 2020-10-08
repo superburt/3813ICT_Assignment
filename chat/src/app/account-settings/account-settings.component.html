@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="bg-light  flex-wrap align-content-right ">
+        <div class="form-group">
+            <h2>Update User Details</h2>
+            <form>
+                <label>Username: </label>
+                <input type="text"  class="form-control" placeholder="currentUser.username" [(ngModel)]="username" name="username">
+                <br>
+                <label>Email: </label>
+                <input type="text"   class="form-control" placeholder="Email" [(ngModel)]="email" name="email" >
+                <br>
+                <label>Role: </label>
+                <input type="text"   class="form-control" placeholder="Role" [(ngModel)]="role" name="role" >
+                <br>
+                <label>Password: </label>
+                <input type="text"   class="form-control" placeholder="Password" [(ngModel)]="pwd" name="pwd" >
+                <br>
+                <label>Upload Image:</label>
+                <input type="file"  class="form-control"(change)="FileSelected($event)"  name="imageFile" id="imageFile">
+            </form>
+            <br>
+            <button (click)="UpdateUser(username, email, role, pwd)" class="btn btn-primary">Update</button>
+        </div>
+    </div>
+    <img src="{{imgSrc}}">
+</div>

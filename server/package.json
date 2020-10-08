@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "denodeify": "^1.2.1",
     "express": "^4.17.1",
+    "formidable": "^1.2.2",
     "mongodb": "^3.6.2",
     "rxjs": "^6.6.3",
     "save": "^2.4.0",

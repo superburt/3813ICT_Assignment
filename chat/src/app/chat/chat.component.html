@@ -1,17 +1,78 @@
-<div *ngIf="isValid">
-    <div class="container">
-      <form>
-          <div class="form-group bg-primary">
-            <label for="messagecontent">New Message</label>
-            <input type="text" [(ngModel)]="messagecontent" name="messagecontent" id="messagecontent" class="form-control">
-          </div>
-          <div  class="form-group">
-            <button (click)="chat(messagecontent)" class="btn btn-info">Send</button>
-          </div>
-    </form>
+
+ <div class="form-group bg-light">
+  <form>
+    <h2>Assign a user to a group</h2>
+    <div class="input-group mb-3">
+      <select [(ngModel)]="groupSelectedToAssign" name="groupSelectedToAssign">
+        <option [ngValue]="null">Select A Group</option>
+        <option *ngFor="let group of setOfGroups">{{group}}</option>
+      </select>
+    </div>  
+    <div class="input-group mb-3">
+      <select [(ngModel)]="userSelected" name="userSelected">
+        <option [ngValue]="null">Select The User To Add</option>
+        <option *ngFor="let user of setOfUsers">{{user}}</option>
+      </select>
+        <button (click)="assignUser(groupSelectedToAssign, userSelected)" class="btn btn-primary">Assign</button>
     </div>
-    <h2>Chat messages</h2>
-    <ul id="leftCol">
-      <li *ngFor="let message of messages" >{{sender}}: {{message}}</li>
-    </ul>
+  </form>
+
+ <br>
+ <br> 
+<div class="container">
+  <h2>Chat</h2>
+  <div class="row no-gutters">
+  <div class="col-sm-4">
+    
+    <form>
+      <div class="input-group mb-5">
+
+        <select [(ngModel)]="groupSelected" name="groupSelected">
+          <option [ngValue]="null">Select group</option>
+          <option *ngFor="let group of setOfGroups">{{group}}</option>
+        </select>
+          <button (click)="chooseGroup(groupSelected)" class="btn btn-primary">Select</button>
+      </div>
+      <div class="input-group mb-3">
+        <select [(ngModel)]="channelSelected" name="channelSelected">
+          <option [ngValue]="null">Select channel</option>
+          <option *ngFor="let channel of setOfChannels">{{channel}}</option>
+        </select>
+          <button (click)="chooseChat(channelSelected)" class="btn btn-primary">Join</button>
+          <button (click)="exitChat()" class="btn btn-danger">Leave</button>
+      </div>
+    </form>
+  </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-sm-4">
+  <form>
+    <div class="input-group mb-3">
+      <input type="text" [(ngModel)]="createNewChannelName" name="createNewChannelName" id="createNewChannelName" class="form-control">
+        <button class="btn btn-primary" (click)="createChannel(createNewChannelName)" type="button">New Channel</button>
+    </div>
+  </form>
+  <form>
+      <div class="input-group mb-3">
+        <input type="text" [(ngModel)]="chatChat" name="chatChat" placeholder="Type something in the chat" id="chatChat" class="form-control">
+        <div class="input-group-prepend">
+          <button class="btn btn-primary" (click)="chat(chatChat)" type="button">Send</button>
+        </div>
+      </div>
+  </form>
+
 </div>
+</div>
+<br>
+<br>
+    <div class="col-sm">
+      <h4>{{channelSelected}}</h4>
+      <br>
+      <h5>CHAT FEED</h5>
+      <ul id="leftCol" style="list-style: none;">
+        <li *ngFor="let chat of chats" >{{chat}}</li>
+      </ul>
+    </div>
+  </div>
+</div> 
