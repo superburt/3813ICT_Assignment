@@ -1,5 +1,5 @@
 module.exports = function(db, app, ObjectID){
-    // Gets the id in mongo that is being requested for deletion in the route
+    // Gets the id in mongo that is being requested for deletion in the form
     app.post('/api/remove', function(req, res){
         if (!req.body){
             return res.sendStatus(400)
